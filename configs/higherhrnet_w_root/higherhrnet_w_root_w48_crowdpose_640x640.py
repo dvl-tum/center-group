@@ -1,4 +1,4 @@
-_base_ = '../configs/higherhrnet/higherhrnet_w48_coco_640x640.py'
+_base_ = '../higherhrnet/higherhrnet_w48_coco_640x640.py'
 
 checkpoint_config = dict(interval=2)
 evaluation = dict(interval=200, metric='mAP', key_indicator='AP')
