@@ -3,8 +3,8 @@ The following checkpoints correspond to our final models:
 
 | Train Data | Method| Detector|Input size | Val/Test AP | Config | Checkpoint |
 |----------|----------|------------|------------|-------|-------|--------|
-| COCO Train 2017 | CenterGroup| HigherHRNet-w32  | 512 | 69.0  | [cfg](../configs/centergroup2/coco/higherhrnet_w32_coco_512x512.py) | [ckpt](https://vision.in.tum.de/webshare/u/brasoand/centergroup/models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth) |
-| COCO Train 2017 | CenterGroup| HigherHRNet-w48  | 640 | 71.0  | [cfg](../configs/centergroup2/coco/higherhrnet_w48_coco_640x640.py) | [ckpt](https://vision.in.tum.de/webshare/u/brasoand/centergroup/models/centergroup/centergroup_higherhrnet_w48_coco_640x640.pth) |
+| COCO Train 2017 | CenterGroup| HigherHRNet-w32  | 512 | 69.0  | [cfg](../configs/centergroup/coco/higherhrnet_w32_coco_512x512.py) | [ckpt](https://vision.in.tum.de/webshare/u/brasoand/centergroup/models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth) |
+| COCO Train 2017 | CenterGroup| HigherHRNet-w48  | 640 | 71.0  | [cfg](../configs/centergroup/coco/higherhrnet_w48_coco_640x640.py) | [ckpt](https://vision.in.tum.de/webshare/u/brasoand/centergroup/models/centergroup/centergroup_higherhrnet_w48_coco_640x640.pth) |
 | CrowdPose train+val | CenterGroup| HigherHRNet-w48  | 640 | 67.6  | [cfg](../configs/centergroup2/crowdpose/higherhrnet_w48_crowdpose_640x640.py) | [ckpt](https://vision.in.tum.de/webshare/u/brasoand/centergroup/models/centergroup/centergroup_higherhrnet_w48_crowdpose_640x640.pth) |
 
 Note that we report single-scale AP on the respective val/test dataset (val for COCO, test for CrowdPose).
