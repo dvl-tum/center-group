@@ -1,6 +1,6 @@
 _base_ = '../base.py'
     
-model = dict(bu_ckpt='higherhrnet_w_root_w32_coco_512x512.pth')
+model = dict(bu_ckpt='models/higherhrnet_w_root_w32_coco_512x512.pth')
 
 
 data_root = 'data/coco'
