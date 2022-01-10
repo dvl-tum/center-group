@@ -46,15 +46,15 @@ Please see [docs/MODEL_ZOO.md](docs/MODEL_ZOO.md)
 To evaluate a model you have to specify its configuration file, its checkpoint, and the number of GPUs you want to use. All of our configurations and checkpoints are available [here](docs/MODEL_ZOO.md)) For example, to run CenterGroup with a HigherHRNet32 detector and a single GPU you can run the following:
 ```
 NUM_GPUS=1
-./tools/dist_test.sh configs/centergroup2/coco/higherhrnet_w32_coco_512x512 models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth $NUM_GPUS 1234
+./tools/dist_test.sh configs/centergroup/coco/higherhrnet_w32_coco_512x512 models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth $NUM_GPUS 1234
 ```
 If you want to use multi-scale testing, please add the `--multi-scale` flag, e.g.:
 ```
-./tools/dist_test.sh configs/centergroup2/coco/higherhrnet_w32_coco_512x512 models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth $NUM_GPUS 1234 --multi-scale
+./tools/dist_test.sh configs/centergroup/coco/higherhrnet_w32_coco_512x512 models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth $NUM_GPUS 1234 --multi-scale
 ```
 You can also modify any other config entry with the `--cfg-options` entry. For example, to disable flip-testing, which is used by default, you can run:
 ```
-./tools/dist_test.sh configs/centergroup2/coco/higherhrnet_w32_coco_512x512 models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth $NUM_GPUS 1234 --cfg-options model.test_cfg.flip_test=False
+./tools/dist_test.sh configs/centergroup/coco/higherhrnet_w32_coco_512x512 models/centergroup/centergroup_higherhrnet_w32_coco_512x512.pth $NUM_GPUS 1234 --cfg-options model.test_cfg.flip_test=False
 ```
 You may need to modify the checkpoint's path, depending on where you downloaded it, and the entry `data_root` in the config file, depending on where you stored your data.
 
