@@ -27,6 +27,10 @@
     pip install -r requirements.txt
     python setup.py develop
     ```
-6. Data preparation. Please follow the instructions [here](https://github.com/open-mmlab/mmpose/blob/65eb45b75da0ca48812f5398a3955c75683e37b5/docs/tasks/2d_body_keypoint.md) to download the [COCO Keypoints](https://cocodataset.org/#home) and [CrowdPose](https://github.com/Jeff-sjtu/CrowdPose) datasets in a directory of your choice. You don't need to download the person detection results. Please download the datasets under `$CENTERGROUP_ROOT/data`, or update the entry `data_root` in the config files if you store them somewhere else.
+6. Install Pytorch Lightning (needed for training):
+    ```
+	pip install pytorch-lightning
+    ```
+7. Data preparation. Please follow the instructions [here](https://github.com/open-mmlab/mmpose/blob/65eb45b75da0ca48812f5398a3955c75683e37b5/docs/tasks/2d_body_keypoint.md) to download the [COCO Keypoints](https://cocodataset.org/#home) and [CrowdPose](https://github.com/Jeff-sjtu/CrowdPose) datasets in a directory of your choice. You don't need to download the person detection results. Please download the datasets under `$CENTERGROUP_ROOT/data`, or update the entry `data_root` in the config files if you store them somewhere else.
 
-7. Download our trained models in `$CENTERGROUP_ROOT/models`, you can find them [here](./MODEL_ZOO.md)
+8. Download our trained models in `$CENTERGROUP_ROOT/models`, you can find them [here](./MODEL_ZOO.md)
