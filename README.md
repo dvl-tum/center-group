@@ -69,7 +69,7 @@ python tools/train.py --cfg configs/coco/centergroup/coco/higherhrnet_w32_coco_5
 ```
 
 ## Training HigherHRNet with Centers
-When training CenterGroup, we first pretrain our Keypoint Detector, HigherHRNet, by adding an additional keypoint prediction corresponding to person centers. All the checkpoints and configurations are provided in the [here](docs/MODEL_ZOO.md)), and the training code is borrowed from MMPose. To train a HigherHRNet w32 detector on COCO on 4 48GB GPUs, you can use the following command:
+When training CenterGroup, we first pretrain our Keypoint Detector, HigherHRNet, by adding an additional keypoint prediction corresponding to person centers. All the checkpoints and configurations are provided in the [here](docs/MODEL_ZOO.md), and the training code is borrowed from MMPose. To train a HigherHRNet w32 detector on COCO on 4 48GB GPUs, you can use the following command:
 ```
 ./tools/dist_train_mmpose.sh configs/higherhrnet_w_root/higherhrnet_w_root_w32_coco_512x512.py 4 --autoscale-lr --deterministic --options data.samples_per_gpu=24
 ```
