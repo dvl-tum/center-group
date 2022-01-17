@@ -111,7 +111,7 @@ def main():
                          plugins=DDPPlugin(find_unused_parameters=False),
                          min_epochs=100,
                          accelerator='ddp',
-                         limit_train_batches=0.001,
+                         #limit_train_batches=0.001,
                          gradient_clip_val=1.0,
                          precision = 16,                        
                          checkpoint_callback = ModelCheckpoint(monitor='AP/val', mode='max', save_top_k=3, verbose=True, save_last=True),
