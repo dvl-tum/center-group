@@ -1,6 +1,6 @@
 
 from pytorch_lightning.plugins import DDPPlugin
-from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint as _ModelCheckpoint
+from pytorch_lightning.callbacks.model_checkpoint import ModelCheckpoint
 import pytorch_lightning as pl
 
 from mmcv import Config, DictAction
@@ -20,27 +20,34 @@ import glob
 
 import centergroup
 
-class ModelCheckpoint(_ModelCheckpoint):
-    # PL will not save every epoch otherwise!!!!!!
-    def on_train_epoch_end(self, trainer, pl_module):
-        self.save_checkpoint(trainer)
-
 class MMPoseData(pl.LightningDataModule):
     def __init__(self, data_cfg):
         super().__init__()
         self.data_cfg = data_cfg
-    def train_dataloader(self):
-        dataset = build_dataset(self.data_cfg['train'])
+    def get_dataloader(self, train_val_test):
+        assert train_val_test in ('train', 'val', 'test')
+        train = train_val_test == 'train'
+        dataset = build_dataset(self.data_cfg[train_val_test], None if train else dict(test_mode=True))
+        batch_size = self.data_cfg['samples_per_gpu'] if train else 1
         dataloader = DataLoader(
                             dataset,
-                            batch_size=self.data_cfg['samples_per_gpu'],
+                            batch_size=batch_size,
                             num_workers=self.data_cfg['workers_per_gpu'],
-                            collate_fn=partial(collate, samples_per_gpu=self.data_cfg['samples_per_gpu']),
+                            collate_fn=partial(collate, samples_per_gpu=batch_size),
                             #collate_fn=collate,
                             pin_memory=True,
-                            shuffle=True)
+                            shuffle=train)
 
         return dataloader
+
+    def train_dataloader(self):
+        return self.get_dataloader('train')
+
+    def val_dataloader(self):
+        return self.get_dataloader('val')
+    
+    def test_dataloader(self):
+        return self.get_dataloader('test')        
 
 def parse_args():
     parser = argparse.ArgumentParser(description='mmpose test model')
@@ -104,10 +111,10 @@ def main():
                          plugins=DDPPlugin(find_unused_parameters=False),
                          min_epochs=100,
                          accelerator='ddp',
-                         #limit_train_batches=0.001,
+                         limit_train_batches=0.001,
                          gradient_clip_val=1.0,
                          precision = 16,                        
-                         callbacks = [ModelCheckpoint(monitor='loss/loc_loss/train', mode='min', save_top_k=-1, verbose=True, save_last=True)],
+                         checkpoint_callback = ModelCheckpoint(monitor='AP/val', mode='max', save_top_k=3, verbose=True, save_last=True),
                          logger = pl.loggers.TensorBoardLogger(args.out, 
                                                                name= osp.basename(args.cfg).split('.')[0], 
                                                                version=version))

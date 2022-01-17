@@ -12,6 +12,7 @@ import torch
 
 from mmpose.models import builder, POSENETS
 from mmpose.models.detectors.base import BasePose
+from mmpose.apis.test import collect_results_gpu
 from mmcv.runner import load_checkpoint
 from pytorch_lightning import LightningModule
 
@@ -24,6 +25,8 @@ from .grouping_attention import GroupingModel
 from .position_encoding import PositionEmbeddingSine
 from .utils import build_basicblock_cnn, split_kp_and_person_preds
 
+list2fp32 = lambda x: [val_.float() for val_ in x]
+dict2fp32 =lambda x: {key: list2fp32(val) if isinstance(val, list) and isinstance(val[0], torch.Tensor) and val[0].dtype== torch.half else val for key, val in x.items()}
 
 @POSENETS.register_module()
 class CenterGroup(BasePose, LightningModule):
@@ -122,18 +125,51 @@ class CenterGroup(BasePose, LightningModule):
                 **kwargs):
         
         batch = {'img': img,
-                 'pad_mask': pad_mask,
-                 'img_metas': img_metas[0]}
+                 'pad_mask': pad_mask}
+        try:
+            batch['img_metas']= img_metas[0]
 
-        if not return_loss:
+        except:
+            batch['img_metas']= img_metas.data[0][0]
+
+        if not return_loss: # Force use of FP32 for validation
+            batch['img'] = batch['img'].float()
+            batch['img_metas']['aug_data'] =  list2fp32(batch['img_metas']['aug_data'])
+            batch = dict2fp32(batch)
             multiscale = 'multiscale' in self.test_cfg and self.test_cfg['multiscale']            
             return self.forward_test(batch, multiscale=multiscale)
         
         else:
-            return self.forward_train(batch)
+            return self.forward_train(batch) 
 
-    def forward_train(*args, **kwargs):
+    def forward_train(*args, **kwargs): 
+        # See 'training_step'
+        # MMPose requires this method, but we use PyTorch Lightning for training.
         pass
+    
+    def validation_step(self, batch, batch_idx):
+        return self.forward(**batch, return_loss=False)
+    
+    def validation_epoch_end(self, outputs):
+        if self.trainer.test_dataloaders:
+            dataset = self.trainer.test_dataloaders[0].dataset
+
+        else:
+            dataset =  self.trainer.val_dataloaders[0].dataset
+
+        all_out = collect_results_gpu(outputs, len(dataset))
+
+        if self.global_rank == 0:
+            results = dataset.evaluate(all_out, self.logger.root_dir)
+            self._log_metrics(results, 'val', prefix = None)
+
+            return results
+
+    def test_step(self, *args, **kwargs):
+        return self.validation_step(*args, **kwargs)
+    
+    def test_epoch_end(self, *args, **kwargs):
+        return self.validation_epoch_end(*args, **kwargs)
 
     def forward_bottom_up(self, batch, train=False):
         flip_test = not train and self.test_cfg['flip_test']
@@ -153,8 +189,8 @@ class CenterGroup(BasePose, LightningModule):
         for bu_output in bu_outputs:
             assert len(bu_output) == 3
             _, fmaps, bu_pred = bu_output
-            fmaps_list.append(fmaps)
-            bu_pred_list.append(bu_pred)
+            fmaps_list.append(fmaps if train else list2fp32(fmaps)) # Force using fp32 for evaluation
+            bu_pred_list.append(bu_pred if train else list2fp32(bu_pred))
 
         kp_pred_list, p_pred_list = [], []
         for bu_pred in bu_pred_list:
@@ -197,6 +233,9 @@ class CenterGroup(BasePose, LightningModule):
         
         if train:
             out['bu_pred'] = bu_pred_list
+        
+        else:
+            out = dict2fp32(out) # FP32 for evaluation
         
         return out
 
@@ -318,7 +357,10 @@ class CenterGroup(BasePose, LightningModule):
 
     def _log_metrics(self, loss_dict, train_val, prefix = 'loss'):
         for loss_name, loss_val in  loss_dict.items():
-            self.log(f"{prefix}/{loss_name}/{train_val}", loss_val)
+            log_str = f"{loss_name}/{train_val}"
+            if prefix:
+                log_str = f"{prefix}/{log_str}"
+            self.log(log_str, loss_val)
 
     def optimizer_step(
         self,

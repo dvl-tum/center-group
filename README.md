@@ -71,8 +71,6 @@ As with evaluation, you can use the `--cfg-options` entry to modify any configur
 python tools/train.py --cfg configs/coco/centergroup/coco/higherhrnet_w32_coco_512x512.py --num_gpus 2 --out output --run_str my_training --cfg-options data.samples_per_gpu=24
 ```
 
-Note: the code does not support evaluation after every epoch yet due to distributed training issues. Moreover, training on CrowdPose is not supported yet. Both features will be released very soon!
-
 ## Demo
 **TODO**
 ## Acknowledgements
