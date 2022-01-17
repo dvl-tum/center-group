@@ -58,9 +58,6 @@ You can also modify any other config entry with the `--cfg-options` entry. For e
 ```
 You may need to modify the checkpoint's path, depending on where you downloaded it, and the entry `data_root` in the config file, depending on where you stored your data.
 
-
-## Training HigherHRNet with Centers
-**TODO**
 ## Training CenterGroup
 To train a model, you have to specify its configuration file and the number of GPUs you want to use. You can optionally specify the path where you want your output checkpoint and log files to be stored, as well as the identifier for this training. For example, to train CenterGroup on COCO with a HigherHRNet w32 backbone and on two GPUs with batch size you can run the following: 
 ```
@@ -69,6 +66,12 @@ python tools/train.py --cfg configs/coco/centergroup/coco/higherhrnet_w32_coco_5
 As with evaluation, you can use the `--cfg-options` entry to modify any configuration. For instance, to use batch size 24 (per GPU) run:
 ```
 python tools/train.py --cfg configs/coco/centergroup/coco/higherhrnet_w32_coco_512x512.py --num_gpus 2 --out output --run_str my_training --cfg-options data.samples_per_gpu=24
+```
+
+## Training HigherHRNet with Centers
+When training CenterGroup, we first pretrain our Keypoint Detector, HigherHRNet, by adding an additional keypoint prediction corresponding to person centers. All the checkpoints and configurations are provided in the [here](docs/MODEL_ZOO.md)), and the training code is borrowed from MMPose. To train a HigherHRNet w32 detector on COCO on 4 48GB GPUs, you can use the following command:
+```
+./tools/dist_train_mmpose.sh configs/higherhrnet_w_root/higherhrnet_w_root_w32_coco_512x512.py 4 --autoscale-lr --deterministic --options data.samples_per_gpu=24
 ```
 
 ## Demo
