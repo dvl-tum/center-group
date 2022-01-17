@@ -34,6 +34,7 @@ bu_model = dict(
                 num_channels=(48, 96, 192, 384))),
     ),
     keypoint_head=dict(in_channels=48,
+                       loss_keypoint=dict(num_joints=NUM_JOINTS+WITH_CENTER),
                        num_joints=NUM_JOINTS + WITH_CENTER,
                        num_deconv_filters=[48]),    
 )
@@ -41,7 +42,7 @@ bu_model = dict(
 # Changes due to having a different number of joints, and using a larger backbone
 model = dict(group_module=dict (head_cfg = dict(num_joints=NUM_JOINTS),
                         kp_encoder_cfg= dict(num_joints=NUM_JOINTS + WITH_CENTER)),
-             bu_ckpt='models/higherhrnet_w_root_w32_coco_512x512.pth',                               
+             bu_ckpt='models/higherhrnet_w_root_w48_crowdpose_640x640.pth',                               
              kp_embed_net=dict(in_c=48), 
              person_embed_net=dict(in_c=48),
              bu_model=bu_model
@@ -68,7 +69,7 @@ data = dict(
     samples_per_gpu=24,
     workers_per_gpu=8,
     train=dict(
-        type='BottomUpCrowdPoseDatasetWithCenters',
+        type='BottomUpCrowdPoseDatasetWithCentersAndBoxes',
         data_cfg = data_cfg,
         ann_file=f'{data_root}/annotations/mmpose_crowdpose_trainval.json',
         img_prefix=f'{data_root}/images/'),
