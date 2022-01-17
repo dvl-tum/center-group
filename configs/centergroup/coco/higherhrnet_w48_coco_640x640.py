@@ -51,7 +51,7 @@ model = dict(bu_model=bu_model,
 
 data_root = 'data/coco'
 data = dict(
-    samples_per_gpu=10,
+    samples_per_gpu=24,
     workers_per_gpu=4,
     train=dict(
         data_cfg=data_cfg,

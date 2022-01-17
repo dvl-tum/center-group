@@ -5,7 +5,7 @@ model = dict(bu_ckpt='models/higherhrnet_w_root_w32_coco_512x512.pth')
 
 data_root = 'data/coco'
 data = dict(
-    samples_per_gpu=10,
+    samples_per_gpu=42,
     workers_per_gpu=4,
     train=dict(
         #type='BottomUpCocoDatasetWithCenters',

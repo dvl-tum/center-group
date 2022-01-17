@@ -62,7 +62,7 @@ You may need to modify the checkpoint's path, depending on where you downloaded 
 ## Training HigherHRNet with Centers
 **TODO**
 ## Training CenterGroup
-To train a model, you have to specify its configuration file and the number of gpus you want to use. You can optionally specify the path where you want your output checkpoint and log files to be stored, as well as the identifier for this training. For example, to train CenterGroup on COCO with a HigherHRNet w32 backbone and on two GPUs with batch size you can run the following: 
+To train a model, you have to specify its configuration file and the number of GPUs you want to use. You can optionally specify the path where you want your output checkpoint and log files to be stored, as well as the identifier for this training. For example, to train CenterGroup on COCO with a HigherHRNet w32 backbone and on two GPUs with batch size you can run the following: 
 ```
 python tools/train.py --cfg configs/coco/centergroup/coco/higherhrnet_w32_coco_512x512.py --num_gpus 2 --out output --run_str my_training 
 ```
