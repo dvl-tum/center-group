@@ -41,8 +41,7 @@ data_cfg = dict(
 
 bu_model = dict(
     type='AssociativeEmbedding_',
-    pretrained=
-    'https://download.openmmlab.com/mmpose/pretrain_models/hrnet_w32-36af842e.pth',
+    pretrained=None,
     backbone=dict(
         type='HRNet',
         in_channels=3,
