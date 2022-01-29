@@ -161,7 +161,7 @@ class CenterGroup(BasePose, LightningModule):
 
         if self.global_rank == 0:
             results = dataset.evaluate(all_out, self.logger.root_dir)
-            self._log_metrics(results, 'val', prefix = None)
+            self._log_metrics(results, 'val', prefix = None, rank_zero_only=True)
 
             return results
 
@@ -355,12 +355,12 @@ class CenterGroup(BasePose, LightningModule):
         lr_scheduler =  torch.optim.lr_scheduler.MultiStepLR(optimizer, milestones=self.train_cfg['lr_scheduler_']['milestones'])
         return [optimizer], [lr_scheduler]
 
-    def _log_metrics(self, loss_dict, train_val, prefix = 'loss'):
+    def _log_metrics(self, loss_dict, train_val, prefix = 'loss', rank_zero_only = False):
         for loss_name, loss_val in  loss_dict.items():
             log_str = f"{loss_name}/{train_val}"
             if prefix:
                 log_str = f"{prefix}/{log_str}"
-            self.log(log_str, loss_val)
+            self.log(log_str, loss_val, rank_zero_only=rank_zero_only)
 
     def optimizer_step(
         self,
