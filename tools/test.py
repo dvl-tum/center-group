@@ -115,6 +115,7 @@ def main():
     if cfg.get('cudnn_benchmark', False):
         torch.backends.cudnn.benchmark = True
     cfg.model.pretrained = None
+    cfg.model.bu_ckpt = None
     cfg.data.test.test_mode = True
 
     """
