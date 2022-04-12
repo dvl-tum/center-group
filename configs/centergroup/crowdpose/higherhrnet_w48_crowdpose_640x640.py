@@ -61,6 +61,10 @@ data_cfg = dict(
     flip_index=[1, 0, 3, 2, 5, 4, 7, 6, 9, 8, 11, 10, 12, 13],
     dataset_channel=channel_cfg['dataset_channel'],
     inference_channel=channel_cfg['inference_channel'],
+    image_size=640,
+    base_size=320,
+    base_sigma=2,
+    heatmap_size=[160, 320, 640],
 
     )
 
